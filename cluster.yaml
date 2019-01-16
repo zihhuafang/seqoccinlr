@@ -1,0 +1,19 @@
+__default__:
+  mem: 8
+  name: "{rule}.{wildcards}"
+  time: "24:00:00"
+  threads: 1
+
+read_stats:
+  threads: 4
+
+read_sample:
+  threads: 1
+
+convert:
+  threads: 1
+
+read_analysis:
+  threads: 1
+  mem: 60
+  
