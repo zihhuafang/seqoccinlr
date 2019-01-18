@@ -24,11 +24,14 @@ This Snakemake pipeline starts from a set of nanopore reads and an associated ge
 ### Step 1: Install workflow
 
 To use this workflow, first download it:
-git clone https://github.com/SeqOccin-SV/seqoccinlr.git
+
+  git clone https://github.com/SeqOccin-SV/seqoccinlr.git
 
 This pipeline needs all the tools and versions indicated in the file environment.yaml. An easy way to achieve this is to create a conda environment. For this you need conda (or Miniconda3-4.4.10) and to execute the following commands:
-cd seqoccinlr
-conda env create --name [yourname] --file environment.yaml
+
+  cd seqoccinlr
+
+  conda env create --name [yourname] --file environment.yaml
 
 ### Step 2: Configure workflow
 
