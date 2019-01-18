@@ -4,13 +4,7 @@ This Snakemake pipeline starts from a set of nanopore reads and an associated ge
 ## Dependencies
   - snakemake-minimal =5.2.4
   - python =3.6.3
-  - jinja2 =2.10
-  - networkx =2.1
-  - matplotlib =2.2.3
-  - graphviz =2.38.0
-  - bcftools =1.9
   - samtools =1.9
-  - bwa =0.7.17
   - pysam =0.15.0
   - nanostat =1.1.0
   - seqtk =1.3
