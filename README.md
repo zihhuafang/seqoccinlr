@@ -26,6 +26,8 @@ This pipeline needs all the tools and versions indicated in the file environment
   cd seqoccinlr
 
   conda env create --name [yourname] --file environment.yaml
+  
+  conda activate [yourname]
 
 ### Step 2: Configure workflow
 
