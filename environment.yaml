@@ -1,3 +1,4 @@
+name: seqoccinsv
 channels:
   - bioconda
   - conda-forge
@@ -15,4 +16,7 @@ dependencies:
   - nanosim =2.2.0
   - ngmlr =0.2.7
   - drmaa =0.7.6
-  
+  - pandas =0.23
+  - sniffles =1.0.10
+  - survivor =1.0.5
+  - mason =2.0.8

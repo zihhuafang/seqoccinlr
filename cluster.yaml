@@ -1,6 +1,7 @@
 __default__:
   mem: 8
   name: "{rule}.{wildcards}"
+  time: "24:00:00"
   threads: 1
 
 read_stats:
@@ -20,6 +21,10 @@ simulator:
   threads: 1
   mem: 30
 
-minimap2:
+minimap:
+  threads: 4
+  mem: 30
+
+ngmlr:
   threads: 4
   mem: 30

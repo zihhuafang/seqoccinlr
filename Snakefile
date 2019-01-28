@@ -1,112 +1,21 @@
-configfile: "config.yaml"
+include: "rules/common.smk"
+
+workdir: config['workdir']
+
+# sample.tsv must be in the working directory
+SAMPLEFILE="samples.tsv"
 
 rule all:
     input:
-        "read_stats/nanostat.out",
-        "read_sample/read.sample.fastq",
-        "data/reads/reads.fa",
-        "nanosim/read_analysis.out",
-        "nanosim/simulator.out",
-        "minimap2/simulated_reads.genome.aln.sam",
-        "ngmlr/simulated_reads.genome.aln.sam"
+        expand("readstats/{sample}.out", sample=samples.index),
+        expand("nanosim/{sample}.simulated.reads.fa.gz", sample=samples.index),
+        expand("minimap/{sample}.simulated.reads.genome.aln.sam", sample=samples.index),
+        expand("ngmlr/{sample}.simulated.reads.genome.aln.sam", sample=samples.index)
 
-rule read_stats:
-    input:
-        fa="data/genome/genome.fa.gz",
-        fq="data/reads/reads.fastq.gz"
-    output:
-        "read_stats/nanostat.out"
-    threads:
-        4
-    resources:
-        mem_mb=8
-    log:
-        "logs/read_stats/nanostat.log"
-    shell:
-        "NanoStat --fastq {input.fq} -t {threads} > {output} 2> {log}"
 
-rule read_sample:
-    input:
-        "data/reads/reads.fastq.gz"
-    output:
-        "read_sample/read.sample.fastq"
-    threads:
-        1
-    params:
-        nbreads=config["nbreads"]
-    log:
-        "logs/read_sample/seqtk.sample.log"
-    shell:
-        "seqtk sample -s$RANDOM {input} {params.nbreads} > {output} 2> {log}"
+##### Modules #####
 
-rule convert:
-    input:
-        "data/reads/reads.fastq.gz"
-    output:
-        "data/reads/reads.fa"
-    threads:
-        1
-    log:
-        "logs/convert/seqtk.convert.log"
-    shell:
-        "seqtk seq -a {input} > {output} 2> {log}"
-
-rule read_analysis:
-    input:
-        reads="data/reads/reads.fa",
-        genome="data/genome/genome.fa.gz"
-    output:
-        out1="nanosim/read_analysis.out",
-        out2="nanosim/training"
-    threads:
-        1
-    log:
-        "logs/nanosim/read_analysis.log"
-    shell:
-        "read_analysis.py -i {input.reads} -r {input.genome} -o {output.out2} > {output.out1} 2> {log}"
-
-rule simulator:
-    input:
-        genome="data/genome/genome.fa.gz",
-        readanal="nanosim/read_analysis.out",
-        train="nanosim/training"
-    output:
-        out1="nanosim/simulator.out",
-        out2="nanosim/simulated"
-    log:
-        "logs/nanosim/simulator.log"
-    shell:
-        "gunzip {input.genome} -c > tmp.fa;"
-        "simulator.py linear -r tmp.fa -n 10000 -c {input.train} -o {output.out2} > {output.out1} 2> {log};"
-        "gzip {output.out2}_reads.fasta -c > {output.out2}_reads.fa.gz;"
-        "rm tmp.fa"
-
-rule minimap2:
-    input:
-        genome="data/genome/genome.fa.gz",
-        reads="nanosim/simulated_reads.fa.gz"
-    output:
-        "minimap2/simulated_reads.genome.aln.sam"
-    threads:
-        4
-    resources:
-        mem_mb=30
-    log:
-        "logs/minimap2/simulated_reads.genome.aln.log"
-    shell:
-        "minimap2 -t {threads} -ax map-ont {input.genome} {input.reads} > {output} 2> {log}"
-
-rule ngmlr:
-    input:
-        genome="data/genome/genome.fa.gz",
-        reads="nanosim/simulated_reads.fa.gz"
-    output:
-        "ngmlr/simulated_reads.genome.aln.sam"
-    threads:
-        4
-    resources:
-        mem_mb=30
-    log:
-        "logs/ngmlr/simulated_reads.genome.aln.log"
-    shell:
-        "ngmlr -t {threads} -r {input.genome} -q {input.reads} -o {output} -x ont 2> {log}"
+include: "rules/readstats.smk"
+include: "rules/nanosim.smk"
+include: "rules/minimap.smk"
+include: "rules/ngmlr.smk"

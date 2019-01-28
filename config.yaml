@@ -1,1 +1,5 @@
-nbreads: 100
+genome: /home/faraut/dynawork/SeqOccin/data/genome/perca_flavescens/Perca_flavescens.PFLA1.1.dna.toplevel.fa.gz
+samples: samples.tsv
+workdir: /work/project/dynagen/sdjebali/SeqOccIn/snakemake/pipeline/seqoccinlr/perca_flavescens
+nbsampread: 10
+nbsimread: 10
