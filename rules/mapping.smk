@@ -4,9 +4,9 @@ rule ngmlr:
     input:
         reads=get_fastq
     output:
-        temp("mapping/{sample}.ngmlr.sam")
+        bam="mapping/{sample}.ngmlr.bam"
     threads:
-        10
+        20
     resources:
         mem_mb=30
     params:
@@ -15,15 +15,17 @@ rule ngmlr:
         "logs/mapping/{sample}.ngmlr.log"
     shell:
         "ngmlr -t {threads} -r {params.genome} -q {input.reads} "
-        "-o {output} -x ont 2> {log}"
+        "-x ont | "
+        "samtools view -bS | "
+        "samtools sort -@{threads} -o {output.bam} 2> {log}"
 
 rule minimap:
     input:
         reads=get_fastq
     output:
-        temp("mapping/{sample}.minimap.sam")
+        bam="mapping/{sample}.minimap.bam"
     threads:
-        10
+        20
     resources:
         mem_mb=30
     params:
@@ -31,7 +33,9 @@ rule minimap:
     log:
         "logs/minimap/{sample}.log"
     shell:
-        "minimap2 -t {threads} -ax map-ont {params.genome} {input} > {output} 2> {log}"
+        "minimap2 -t {threads} -ax map-ont {params.genome} {input} |
+        "samtools view -bS | "
+        "samtools sort -@{threads} -o {output.bam} 2> {log}"
 
 
 rule samtobam:
