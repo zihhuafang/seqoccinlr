@@ -1,21 +1,23 @@
+import os
+
 include: "rules/common.smk"
 
-workdir: config['workdir']
+SAMPLEFILE = os.path.abspath(config["samples"])
+GENOME = os.path.abspath(config["genome"])
 
-# sample.tsv must be in the working directory
-SAMPLEFILE="samples.tsv"
+samples = get_samples(SAMPLEFILE)
+tools = get_tools(config['tools'])
+
+workdir: config['workdir']
+wildcard_constraints:
+    tool = "(minimap|ngmlr)"
 
 rule all:
     input:
         expand("readstats/{sample}.out", sample=samples.index),
-        expand("nanosim/{sample}.simulated.reads.fa.gz", sample=samples.index),
-        expand("minimap/{sample}.simulated.reads.genome.aln.sam", sample=samples.index),
-        expand("ngmlr/{sample}.simulated.reads.genome.aln.sam", sample=samples.index)
 
 
 ##### Modules #####
 
-include: "rules/readstats.smk"
-include: "rules/nanosim.smk"
-include: "rules/minimap.smk"
-include: "rules/ngmlr.smk"
+include: "rules/stats.smk"
+include: "rules/mapping.smk"
